@@ -1,6 +1,6 @@
 # Build and release Suwar
 
-Source repository: [HamzaMPSY/suwar](https://github.com/HamzaMPSY/suwar). This document covers local artifacts and the checked-in [Android APK workflow](../.github/workflows/android-apk.yml). Hosted execution is verified through its actual Actions run; adding the workflow alone does not establish a successful hosted build. Web hosting and public release publishing are separate.
+Source repository: [HamzaMPSY/suwar](https://github.com/HamzaMPSY/suwar). This document covers local artifacts and the checked-in [Android APK workflow](../.github/workflows/android-apk.yml). Hosted execution is verified through its actual Actions run; adding the workflow alone does not establish a successful hosted build. Web hosting and Play Store publishing are separate.
 
 ## Toolchain and checks
 
@@ -58,9 +58,15 @@ Use an APK matching the device architecture. ARM64 alone does not cover every An
 
 ### GitHub Actions APK download
 
-[Android APK](https://github.com/HamzaMPSY/suwar/actions/workflows/android-apk.yml) runs on pushes to `main`, pull requests targeting `main`, and manual **Run workflow** requests. It uses hosted Ubuntu 24.04, Flutter 3.38.5, JDK 17 and `flutter pub get --enforce-lockfile`, then analyzes, tests and builds the release ARM64 APK. Superseded runs are cancelled; each job has a 30-minute timeout.
+[Android APK](https://github.com/HamzaMPSY/suwar/actions/workflows/android-apk.yml) runs on pushes to `main`, pull requests targeting `main`, and manual **Run workflow** requests. It uses hosted Ubuntu 24.04, Flutter 3.38.5, JDK 17 and `flutter pub get --enforce-lockfile`, then analyzes, tests and builds the release ARM64 APK. Superseded runs are cancelled; the build has a 30-minute timeout and publication has a 10-minute timeout.
 
-The workflow pins its action versions to verified commit SHAs. Its token has only `contents: read`, checkout does not persist credentials, and it neither publishes GitHub Releases nor requires signing secrets. Workflow-scoped Gradle options cap its heap at 3 GiB, Kotlin daemon heap at 1 GiB and workers at 2; the larger local-development Gradle configuration stays unchanged. The optional native JVM regression script depends on locally populated compiler caches and is not part of this clean-runner workflow; the Dart regression suite runs in full.
+The workflow pins its action versions to verified commit SHAs. The build retains `contents: read`; only the separate publisher receives `contents: write`. Checkout does not persist credentials, and publication uses the job token without new secrets or signing keys. Workflow-scoped Gradle options cap its heap at 3 GiB, Kotlin daemon heap at 1 GiB and workers at 2; the larger local-development Gradle configuration stays unchanged. The optional native JVM regression script depends on locally populated compiler caches and is not part of this clean-runner workflow; the Dart regression suite runs in full.
+
+Successful pushes to `main` and manual runs of `main` in `HamzaMPSY/suwar` publish a [GitHub Release](https://github.com/HamzaMPSY/suwar/releases/latest). Pull requests and manual runs on other branches only build artifacts. Download the [latest APK directly](https://github.com/HamzaMPSY/suwar/releases/latest/download/suwar-pixel-arm64-development-signed.apk); public release assets do not require an Actions artifact ZIP or GitHub sign-in. Each release also includes `SHA256SUMS` and `BUILD_INFO.json`.
+
+The publisher downloads the exact successful build artifact by ID, verifies its checksum, size, source commit, repository and workflow run, then uploads all three files to a draft before publishing it as **Latest**. Tags combine the app version with workflow run number and publication attempt, for example `v0.6.1-build.2.1`; the title retains the complete app version, such as `0.6.1+7`. The tag targets the exact built commit. Existing tags and release assets are never overwritten or moved. Rerunning a failed publisher uses a new attempt tag and can reuse the original successful build artifact. Interrupted uploads may leave an unpublished draft for the repository owner to inspect or delete. Published release assets remain available until the owner removes them; Actions artifact retention is separate.
+
+For PR builds, other branches, or the original build artifact:
 
 1. Open **Actions → Android APK** and select a successful run, or choose **Run workflow** for a manual build.
 2. Under **Artifacts**, download `suwar-pixel-arm64-development-signed-<run>-<attempt>` and extract the ZIP. Artifact downloads require signing in to GitHub with an account that has access to the repository, including for public repositories.
@@ -74,7 +80,7 @@ The workflow pins its action versions to verified commit SHAs. Its token has onl
 
 **The current release build uses the development/debug signing configuration** in [android/app/build.gradle.kts](../android/app/build.gradle.kts). Release mode optimizes the application; it does not make this configuration a production-signed release.
 
-Before public distribution, establish the application identity, owner-controlled signing key and secure signing configuration. Keep keystores, passwords and local signing properties outside version control. Preserve the signing identity for updates. Rebuilding with a different debug key or switching to a new production certificate can prevent replacement of an existing installation; plan migration and backup before changing certificates.
+Before production distribution, establish the application identity, owner-controlled signing key and secure signing configuration. Keep keystores, passwords and local signing properties outside version control. Preserve the signing identity for updates. Rebuilding with a different debug key or switching to a new production certificate can prevent replacement of an existing installation; plan migration and backup before changing certificates.
 
 Do not treat a locally built development-signed APK as a store-ready artifact. iOS signing and distribution have not been validated.
 
