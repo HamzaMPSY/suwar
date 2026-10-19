@@ -1,6 +1,6 @@
 # Build and release Suwar
 
-This document covers local artifacts and the steps to take when a hosting repository is provided. No remote repository, hosted site, CI pipeline or public release is configured by these instructions.
+Source repository: [HamzaMPSY/suwar](https://github.com/HamzaMPSY/suwar). This document covers local artifacts and the checked-in [Android APK workflow](../.github/workflows/android-apk.yml). Hosted execution is verified through its actual Actions run; adding the workflow alone does not establish a successful hosted build. Web hosting and public release publishing are separate.
 
 ## Toolchain and checks
 
@@ -36,7 +36,7 @@ The build includes local Quran text, fonts and renderer resources. Serving those
 5. Test an upgrade with the host’s cache behavior. During investigation, distinguish an old service-worker/cache response from the new build.
 6. After the owner provides the destination, configure the remote, verify the resulting build and publish within the authorized scope.
 
-No repository URL is assumed here. Add a remote or provider-specific workflow only once the owner supplies the destination.
+The supplied GitHub repository hosts the source and Android build workflow. No web deployment target is configured by the APK workflow.
 
 ## Build an Android APK
 
@@ -55,6 +55,20 @@ flutter build apk --release --split-per-abi
 ```
 
 Use an APK matching the device architecture. ARM64 alone does not cover every Android device.
+
+### GitHub Actions APK download
+
+[Android APK](https://github.com/HamzaMPSY/suwar/actions/workflows/android-apk.yml) runs on pushes to `main`, pull requests targeting `main`, and manual **Run workflow** requests. It uses hosted Ubuntu 24.04, Flutter 3.38.5, JDK 17 and `flutter pub get --enforce-lockfile`, then analyzes, tests and builds the release ARM64 APK. Superseded runs are cancelled; each job has a 30-minute timeout.
+
+The workflow pins its action versions to verified commit SHAs. Its token has only `contents: read`, checkout does not persist credentials, and it neither publishes GitHub Releases nor requires signing secrets. Workflow-scoped Gradle options cap its heap at 3 GiB, Kotlin daemon heap at 1 GiB and workers at 2; the larger local-development Gradle configuration stays unchanged. The optional native JVM regression script depends on locally populated compiler caches and is not part of this clean-runner workflow; the Dart regression suite runs in full.
+
+1. Open **Actions → Android APK** and select a successful run, or choose **Run workflow** for a manual build.
+2. Under **Artifacts**, download `suwar-pixel-arm64-development-signed-<run>-<attempt>` and extract the ZIP. Artifact downloads require signing in to GitHub with an account that has access to the repository, including for public repositories.
+3. The ZIP contains `suwar-pixel-arm64-development-signed.apk`, `SHA256SUMS` and `BUILD_INFO.json`. Metadata records the source commit, app/toolchain versions, APK size, signing status and SHA256. Artifacts are retained for 14 days.
+4. Verify from the extracted directory with `sha256sum -c SHA256SUMS` on Linux, or `shasum -a 256 suwar-pixel-arm64-development-signed.apk` on macOS and compare the recorded digest.
+5. Install only on an ARM64 Android device, subject to the signing compatibility below. A workflow run builds an artifact; physical-device behavior still needs its own verification.
+
+**This is a development-signed APK.** GitHub's fresh runner creates its own debug certificate, which generally differs from the certificate used on the developer's Pixel. The same package name and version do not make those signatures interchangeable. `adb install -r` succeeds only when Android accepts the signing identity and version; otherwise preserve the installed app and its data. Do not uninstall or clear storage to bypass a signature mismatch. A durable shared signing identity is a separate owner-controlled decision; no private key or keystore is uploaded with the artifact.
 
 ### Signing status
 

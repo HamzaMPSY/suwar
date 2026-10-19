@@ -81,7 +81,9 @@ flutter analyze
 flutter test
 ```
 
-For web and Android artifacts, signing status and future repository hosting, see [Build and release](docs/RELEASE.md).
+The [Android APK workflow](https://github.com/HamzaMPSY/suwar/actions/workflows/android-apk.yml) runs on pushes and pull requests to `main`, and from **Run workflow**. After a successful run, download the **suwar-pixel-arm64-development-signed** artifact from the run page and extract its APK. It includes a SHA256 checksum and build metadata; see [CI builds](docs/RELEASE.md#github-actions-apk-download).
+
+CI uses a runner-generated debug certificate. It can update an existing Pixel installation only if the signing certificates match; export a backup before any signing migration. For local artifacts and signing details, see [Build and release](docs/RELEASE.md).
 
 ## Data and backups
 
