@@ -1,0 +1,45 @@
+name: suwar
+description: A personal Arabic Warsh Quran and memorization companion.
+publish_to: none
+version: 0.6.1+7
+environment:
+  sdk: ^3.10.4
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: 2.5.5
+  cupertino_icons: 1.0.8
+  adhan_dart: 2.0.1
+  flutter_local_notifications: 19.5.0
+  timezone: 0.10.1
+  just_audio: 0.9.46
+  audio_session: 0.1.25
+  http: 1.6.0
+  path_provider: 2.1.6
+  crypto: 3.0.7
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/quran/
+    - assets/audio/
+    - assets/fonts/Amiri-OFL.txt
+  fonts:
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic-Regular.ttf
+        - asset: assets/fonts/NotoSansArabic-Bold.ttf
+          weight: 700
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+        - asset: assets/fonts/Amiri-Bold.ttf
+          weight: 700
+    - family: Warsh
+      fonts:
+        - asset: assets/fonts/warsh.10.ttf

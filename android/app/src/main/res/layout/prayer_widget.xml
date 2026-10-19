@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/prayer_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layoutDirection="rtl"
+    android:background="@drawable/prayer_widget_background"
+    android:padding="16dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/prayer_widget_city"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="سُوَر · الصلاة القادمة"
+            android:textColor="#F7F4EA"
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:textDirection="rtl" />
+        <TextView
+            android:id="@+id/prayer_widget_refresh"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="↻"
+            android:textSize="26sp"
+            android:textColor="#F7F4EA"
+            android:gravity="center"
+            android:contentDescription="تحديث عرض مواقيت الصلاة" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/prayer_widget_time"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="افتح سُوَر لتحديث المواقيت"
+        android:textColor="#F7F4EA"
+        android:textSize="26sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="14sp"
+        android:autoSizeMaxTextSize="26sp"
+        android:autoSizeStepGranularity="1sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:textDirection="rtl" />
+    <TextView
+        android:id="@+id/prayer_widget_updated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="افتح سُوَر لحفظ مواقيت مدينتك"
+        android:textColor="#E8EEE5"
+        android:textSize="11sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:textDirection="rtl" />
+</LinearLayout>
