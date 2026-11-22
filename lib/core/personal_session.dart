@@ -42,6 +42,7 @@ class PersonalSession with WidgetsBindingObserver {
     final preferences = await SharedPreferences.getInstance();
     await BackupJournal.recover(preferences);
     final app = await AppState.load(await QuranRepository.load(rootBundle));
+    await app.ayahWidget.initialize();
     final passages = PassageState(
       repository: app.repository,
       preferences: preferences,

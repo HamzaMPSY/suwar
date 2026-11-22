@@ -105,6 +105,16 @@ Check the installed version and exercise the actual release on an available devi
 
 Record which checks were actually executed. Successful compilation or installation alone does not verify these behaviors.
 
+## Build the iPhone app and ayah extension
+
+```sh
+flutter build ios --simulator --debug --no-codesign
+```
+
+This compiles Runner and embeds `AyahWidget.appex`. The widget supports iOS 16+ accessory-rectangular lock-screen placement and medium home-screen placement. App and extension both use the App Group `group.com.suwar.suwar`. For a physical device, open `ios/Runner.xcworkspace`, select the owner’s development team for both targets, and enable that same App Group on both identifiers/provisioning profiles. Keep their application identifiers and entitlements consistent. Simulator compilation does not validate signed-device sharing or widget refresh delivery.
+
+In Settings → «آية تُطمئنك», select a theme; add the widget through the iPhone’s lock-screen customization UI. Check daily rotation, a theme change, and both cold/warm taps into the exact source ayah on a signed device. Android lock-screen placement depends on OS/OEM support; the in-app pin request targets the home screen. See [widget setup and behavior](SUGGESTIONS_AND_WIDGETS.md).
+
 ## Source-control and publication hygiene
 
 Keep source, `pubspec.lock`, tests, curated documentation, content provenance and intended design sources. Review staged files before the first commit or publication.
@@ -116,6 +126,12 @@ Do not commit user progress or an exported personal backup as a fixture. Use exp
 ## Release record
 
 For each release, record the version/build number, source revision, Flutter version, checks run, artifact SHA256, signing status and known limitations. Update `pubspec.yaml` version deliberately before distribution.
+
+### 0.7.0+8 — November 22, 2026
+
+Persistent suggestion cycles exclude Al-Fatiha, preserve upcoming reminder selections, and avoid consuming unscheduled or canceled reminders. Adds curated Warsh ayah widgets for Android and iPhone, with themes, daily rotation and exact-ayah reading. See [behavior, provenance, platform setup and verification](SUGGESTIONS_AND_WIDGETS.md).
+
+Local verification: 149 Flutter tests passed, static analysis clean, Android debug APK and unsigned iOS simulator app/widget builds passed. Physical-device widget behavior and iOS signing remain unverified. The GitHub workflow builds and publishes a release-mode Pixel ARM64 APK with its existing runner-generated development certificate; this does not match a previous run’s signing key. Preserve installed progress if Android rejects an update.
 
 ### 0.6.1+7 — October 19, 2026
 

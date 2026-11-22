@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../core/app_state.dart';
 import '../../core/theme.dart';
@@ -126,25 +125,25 @@ class _PrayerReviewScreenState extends State<PrayerReviewScreen> {
                     ],
                     if (surahs.length == 1)
                       const Text(
-                        'هذه السورة المتاحة من الاقتراح في محفوظاتك الآن.',
+                        'اقتراح واحد متاح في هذه الخطوة من الدورة.',
                         style: TextStyle(color: SuwarColors.muted),
                       ),
                     const SizedBox(height: 36),
                     PrimaryAction(
-                      label: 'اقتراح سورتين أخريين',
+                      label: 'الاقتراح التالي',
                       secondary: true,
-                      onPressed: eligible.length < 2
+                      onPressed: eligible.isEmpty
                           ? null
                           : () => setState(
-                              () => targets = selectRecitations(
-                                eligible,
-                                Random(),
-                              ).map((t) => t.reference).toList(),
+                              () => targets = widget.app.suggestionHistory
+                                  .next(eligible)
+                                  .map((t) => t.reference)
+                                  .toList(),
                             ),
                     ),
                     const SizedBox(height: 22),
                     const Text(
-                      'اختيار عشوائي من محفوظاتك فقط',
+                      'دورة من محفوظاتك دون تكرار، مع استثناء الفاتحة',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: SuwarColors.muted, fontSize: 13),
                     ),
@@ -275,10 +274,10 @@ class _PrayerReviewScreenState extends State<PrayerReviewScreen> {
                 onPressed: eligible.isEmpty
                     ? null
                     : () => setState(
-                        () => targets = selectRecitations(
-                          eligible,
-                          Random(),
-                        ).map((t) => t.reference).toList(),
+                        () => targets = widget.app.suggestionHistory
+                            .next(eligible)
+                            .map((t) => t.reference)
+                            .toList(),
                       ),
                 child: const Text('اقتراح جديد من حفظي'),
               ),

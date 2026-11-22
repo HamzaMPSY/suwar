@@ -91,7 +91,7 @@ class EmptySuggestionsContent extends StatelessWidget {
               constraints: const BoxConstraints(minHeight: 88),
               child: const Center(
                 child: Text(
-                  'حدّد سورتين على الأقل لتصلك\nاقتراحات متنوعة مع تذكير الصلاة.',
+                  'حدّد السور التي تحفظها، غير الفاتحة،\nلتصلك اقتراحات مع تذكير الصلاة.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, color: SuwarColors.muted),
                 ),
@@ -132,7 +132,9 @@ class SingleSuggestionScreen extends StatelessWidget {
         listenable: state,
         builder: (context, _) {
           final known = state.repository.surahs
-              .where((s) => state.memorizedIds.contains(s.number))
+              .where(
+                (s) => s.number != 1 && state.memorizedIds.contains(s.number),
+              )
               .toList();
           if (known.isEmpty) {
             return EmptySuggestionsContent(

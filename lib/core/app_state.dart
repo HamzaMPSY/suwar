@@ -5,12 +5,20 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'quran_repository.dart';
+import '../features/suggestions/suggestion_history.dart';
+import '../features/ayah_widget/ayah_widget.dart';
+import '../features/passages/recitation_target.dart';
 
 class AppState extends ChangeNotifier {
   AppState({required this.repository, required SharedPreferences preferences})
     : _preferences = preferences {
+    suggestionHistory = SuggestionHistory(preferences);
+    ayahWidget = AyahWidgetBridge(repository);
     _restore();
   }
+
+  late final SuggestionHistory suggestionHistory;
+  late final AyahWidgetBridge ayahWidget;
 
   static const storageKey = 'suwar.state.v1';
   static const recoveryKey = '$storageKey.recovery';
@@ -168,19 +176,25 @@ class AppState extends ChangeNotifier {
     return _save();
   }
 
-  Future<void> flush() => _pendingWrite;
+  Future<void> flush() async {
+    await _pendingWrite;
+    await suggestionHistory.flush();
+  }
 
   void clearStorageError() {
     _storageError = null;
     notifyListeners();
   }
 
-  List<Surah> suggestions(Random random) {
-    final known =
-        repository.surahs
-            .where((surah) => _memorizedIds.contains(surah.number))
-            .toList()
-          ..shuffle(random);
-    return known.take(2).toList();
+  List<Surah> suggestions(Random random) => suggestionHistory
+      .next(eligibleRecitations(this, null))
+      .map((target) => repository.surah(target.range.surahId))
+      .toList();
+
+  @override
+  void dispose() {
+    suggestionHistory.dispose();
+    ayahWidget.dispose();
+    super.dispose();
   }
 }

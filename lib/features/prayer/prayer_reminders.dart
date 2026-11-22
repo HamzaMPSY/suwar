@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../passages/recitation_target.dart';
+import '../suggestions/suggestion_history.dart';
 import 'prayer_models.dart';
 import 'prayer_time_zones.dart';
 import 'reminder_payload.dart';
@@ -15,6 +16,8 @@ import 'reminder_platform_config.dart';
 export 'reminder_payload.dart' show ReminderTap;
 
 class PrayerReminders extends ChangeNotifier {
+  PrayerReminders({this.suggestions});
+  final SuggestionHistory? suggestions;
   final _plugin = FlutterLocalNotificationsPlugin();
   final _taps = StreamController<ReminderTap>.broadcast();
   final _random = Random();
@@ -161,67 +164,104 @@ class PrayerReminders extends ChangeNotifier {
     final known = List<RecitationTarget>.of(memorized);
     return _serialize(() async {
       await _readPermissions();
-      await _cancelOwned();
-      if (!settings.remindersEnabled || !_permissionGranted) return;
+      if (!settings.remindersEnabled || !_permissionGranted) {
+        suggestions?.cancelFuture();
+        await suggestions?.flush();
+        await _cancelOwned();
+        return;
+      }
       final location = PrayerTimeZones.location(settings.city.timeZone);
       final now = DateTime.now().toUtc();
-      for (final prayer in prayers) {
-        if (!settings.enabledPrayers.contains(prayer.kind)) continue;
-        final reminder = prayer.timeUtc.subtract(
-          Duration(minutes: settings.leadMinutes),
-        );
-        if (!reminder.isAfter(now)) continue;
-        final selected = settings.includeSuggestions
-            ? selectRecitations(known, _random)
-            : <RecitationTarget>[];
-        final local = tz.TZDateTime.from(prayer.timeUtc, location);
-        final id =
-            (local.year * 10000 + local.month * 100 + local.day) * 10 +
-            prayer.kind.index;
-        final payload = ReminderTap(
-          targets: selected.map((target) => target.reference).toList(),
-          prayer: prayer.kind.name,
-        ).encode();
-        final title = settings.leadMinutes == 0
-            ? 'حان وقت صلاة ${prayer.kind.label}'
-            : 'اقترب وقت صلاة ${prayer.kind.label}';
-        final body = settings.includeSuggestions
-            ? recitationSuggestionText(selected)
-            : 'افتح سُوَر للاطلاع على مواقيت الصلاة.';
-        Future<void> add(AndroidScheduleMode mode) => _plugin.zonedSchedule(
-          id,
-          title,
-          body,
-          PrayerTimeZones.notificationTime(reminder),
-          reminderNotificationDetails(body),
-          androidScheduleMode: mode,
-          payload: payload,
-        );
-        try {
-          await add(
-            _exactAllowed
-                ? AndroidScheduleMode.exactAllowWhileIdle
-                : AndroidScheduleMode.inexactAllowWhileIdle,
+      final slots = [
+        for (final p in prayers)
+          if (settings.enabledPrayers.contains(p.kind) &&
+              p.timeUtc
+                  .subtract(Duration(minutes: settings.leadMinutes))
+                  .isAfter(now))
+            SuggestionSlot(
+              'prayer:${p.kind.name}:${p.timeUtc.millisecondsSinceEpoch}',
+              p.timeUtc.subtract(Duration(minutes: settings.leadMinutes)),
+            ),
+      ];
+      if (!settings.includeSuggestions) suggestions?.cancelFuture(now: now);
+      final planned = settings.includeSuggestions
+          ? suggestions?.plan(known, slots, now: now)
+          : null;
+      await suggestions?.flush();
+      if (suggestions?.error != null) throw StateError(suggestions!.error!);
+      await _cancelOwned();
+      final scheduled = <String>{};
+      try {
+        for (final prayer in prayers) {
+          if (!settings.enabledPrayers.contains(prayer.kind)) continue;
+          final reminder = prayer.timeUtc.subtract(
+            Duration(minutes: settings.leadMinutes),
           );
-        } on PlatformException catch (error) {
-          if (error.code != 'exact_alarms_not_permitted') rethrow;
-          _exactAllowed = false;
-          await add(AndroidScheduleMode.inexactAllowWhileIdle);
+          if (!reminder.isAfter(now)) continue;
+          final selected = settings.includeSuggestions
+              ? (planned?['prayer:${prayer.kind.name}:${prayer.timeUtc.millisecondsSinceEpoch}'] ??
+                    selectRecitations(known, _random))
+              : <RecitationTarget>[];
+          final local = tz.TZDateTime.from(prayer.timeUtc, location);
+          final id =
+              (local.year * 10000 + local.month * 100 + local.day) * 10 +
+              prayer.kind.index;
+          final payload = ReminderTap(
+            targets: selected.map((target) => target.reference).toList(),
+            prayer: prayer.kind.name,
+          ).encode();
+          final title = settings.leadMinutes == 0
+              ? 'حان وقت صلاة ${prayer.kind.label}'
+              : 'اقترب وقت صلاة ${prayer.kind.label}';
+          final body = settings.includeSuggestions
+              ? recitationSuggestionText(selected)
+              : 'افتح سُوَر للاطلاع على مواقيت الصلاة.';
+          Future<void> add(AndroidScheduleMode mode) => _plugin.zonedSchedule(
+            id,
+            title,
+            body,
+            PrayerTimeZones.notificationTime(reminder),
+            reminderNotificationDetails(body),
+            androidScheduleMode: mode,
+            payload: payload,
+          );
+          try {
+            await add(
+              _exactAllowed
+                  ? AndroidScheduleMode.exactAllowWhileIdle
+                  : AndroidScheduleMode.inexactAllowWhileIdle,
+            );
+          } on PlatformException catch (error) {
+            if (error.code != 'exact_alarms_not_permitted') rethrow;
+            _exactAllowed = false;
+            await add(AndroidScheduleMode.inexactAllowWhileIdle);
+          }
+          scheduled.add(
+            'prayer:${prayer.kind.name}:${prayer.timeUtc.millisecondsSinceEpoch}',
+          );
+          final coverage = tz.TZDateTime(
+            location,
+            local.year,
+            local.month,
+            local.day,
+          );
+          if (_coverageUntil == null || coverage.isAfter(_coverageUntil!)) {
+            _coverageUntil = coverage;
+          }
         }
-        final coverage = tz.TZDateTime(
-          location,
-          local.year,
-          local.month,
-          local.day,
-        );
-        if (_coverageUntil == null || coverage.isAfter(_coverageUntil!)) {
-          _coverageUntil = coverage;
-        }
+      } finally {
+        suggestions?.retainFuture(scheduled, now: now);
+        await suggestions?.flush();
+        if (suggestions?.error != null) throw StateError(suggestions!.error!);
       }
     });
   }
 
-  Future<void> cancelAll() => _serialize(_cancelOwned);
+  Future<void> cancelAll() => _serialize(() async {
+    suggestions?.cancelFuture();
+    await suggestions?.flush();
+    await _cancelOwned();
+  });
 
   Future<void> showTest(List<RecitationTarget> memorized) {
     final known = List<RecitationTarget>.of(memorized);
@@ -230,7 +270,10 @@ class PrayerReminders extends ChangeNotifier {
       if (!_permissionGranted) {
         throw StateError('Notification permission not granted');
       }
-      final selected = selectRecitations(known, _random);
+      final selected =
+          suggestions?.next(known) ?? selectRecitations(known, _random);
+      await suggestions?.flush();
+      if (suggestions?.error != null) throw StateError(suggestions!.error!);
       await _plugin.show(
         reminderTestId,
         'تجربة تذكير سُوَر',

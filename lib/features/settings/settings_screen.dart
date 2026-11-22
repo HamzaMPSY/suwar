@@ -9,6 +9,7 @@ import '../prayer/prayer_runtime.dart';
 import '../prayer/prayer_settings_screen.dart';
 import 'personal_settings_actions.dart';
 import 'reading_settings_screen.dart';
+import '../ayah_widget/ayah_widget_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key, required this.state, this.prayer});
@@ -60,6 +61,11 @@ class SettingsScreen extends StatelessWidget {
                             context,
                             PrayerSettingsScreen(runtime: prayer!, app: state),
                           ),
+                  ),
+                  SettingsEntry(
+                    title: 'آية تُطمئنك',
+                    value: 'آيات التذكير وأداة شاشة القفل',
+                    onTap: () => _open(context, AyahWidgetScreen(app: state)),
                   ),
                   SettingsEntry(
                     title: 'حجم النص',

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "94:5",
+    "surahId": 94,
+    "ayahNumber": 5,
+    "topic": "comfort",
+    "surahName": "الشرح",
+    "context": "بشارة اليسر مع العسر",
+    "compact": true,
+    "sourceText": "فَإِنَّ مَعَ اَ۬لْعُسْرِ يُسْراً ٥"
+  },
+  {
+    "id": "36:57",
+    "surahId": 36,
+    "ayahNumber": 57,
+    "topic": "jannah",
+    "surahName": "يس",
+    "context": "سلام أهل الجنة",
+    "compact": true,
+    "sourceText": "سَلَٰمٞۖ قَوْلاٗ مِّن رَّبّٖ رَّحِيمٖۖ ٥٧"
+  },
+  {
+    "id": "85:16",
+    "surahId": 85,
+    "ayahNumber": 16,
+    "topic": "power",
+    "surahName": "البروج",
+    "context": "نفاذ مشيئة الله",
+    "compact": true,
+    "sourceText": "فَعَّالٞ لِّمَا يُرِيدُۖ ١٦"
+  },
+  {
+    "id": "85:14",
+    "surahId": 85,
+    "ayahNumber": 14,
+    "topic": "comfort",
+    "surahName": "البروج",
+    "context": "مغفرة الله ومحبته",
+    "compact": true,
+    "sourceText": "وَهُوَ اَ۬لْغَفُورُ اُ۬لْوَدُودُ ١٤"
+  },
+  {
+    "id": "50:34",
+    "surahId": 50,
+    "ayahNumber": 34,
+    "topic": "jannah",
+    "surahName": "ق",
+    "context": "الدخول إلى الجنة بسلام",
+    "compact": false,
+    "sourceText": "اُ۟دْخُلُوهَا بِسَلَٰمٖۖ ذَٰلِكَ يَوْمُ اُ۬لْخُلُودِۖ ٣٤"
+  },
+  {
+    "id": "85:13",
+    "surahId": 85,
+    "ayahNumber": 13,
+    "topic": "power",
+    "surahName": "البروج",
+    "context": "الله يبدئ الخلق ويعيده",
+    "compact": true,
+    "sourceText": "اِنَّهُۥ هُوَ يُبْدِۓُ وَيُعِيدُۖ ١٣"
+  },
+  {
+    "id": "94:6",
+    "surahId": 94,
+    "ayahNumber": 6,
+    "topic": "comfort",
+    "surahName": "الشرح",
+    "context": "اليسر مع العسر",
+    "compact": true,
+    "sourceText": " اِنَّ مَعَ اَ۬لْعُسْرِ يُسْراٗۖ ٦"
+  },
+  {
+    "id": "15:46",
+    "surahId": 15,
+    "ayahNumber": 46,
+    "topic": "jannah",
+    "surahName": "الحجر",
+    "context": "دخول الجنة بأمان",
+    "compact": true,
+    "sourceText": "اُ۟دْخُلُوهَا بِسَلَٰمٍ اٰمِنِينَۖ ٤٦"
+  },
+  {
+    "id": "67:1",
+    "surahId": 67,
+    "ayahNumber": 1,
+    "topic": "power",
+    "surahName": "الملك",
+    "context": "ملك الله وقدرته",
+    "compact": false,
+    "sourceText": "تَبَٰرَكَ اَ۬لذِے بِيَدِهِ اِ۬لْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَےْءٖ قَدِيرٌۖ ١"
+  },
+  {
+    "id": "13:29",
+    "surahId": 13,
+    "ayahNumber": 29,
+    "topic": "comfort",
+    "surahName": "الرعد",
+    "context": "طمأنينة القلوب بذكر الله",
+    "compact": false,
+    "sourceText": "اَ۬لذِينَ ءَامَنُواْ وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اِ۬للَّهِۖ أَلَا بِذِكْرِ اِ۬للَّهِ تَطْمَئِنُّ اُ۬لْقُلُوبُۖ ٢٩"
+  },
+  {
+    "id": "15:45",
+    "surahId": 15,
+    "ayahNumber": 45,
+    "topic": "jannah",
+    "surahName": "الحجر",
+    "context": "نعيم المتقين",
+    "compact": false,
+    "sourceText": " اِنَّ اَ۬لْمُتَّقِينَ فِے جَنَّٰتٖ وَعُيُونٍ ٤٥"
+  },
+  {
+    "id": "50:35",
+    "surahId": 50,
+    "ayahNumber": 35,
+    "topic": "jannah",
+    "surahName": "ق",
+    "context": "نعيم الجنة والمزيد",
+    "compact": false,
+    "sourceText": "لَهُم مَّا يَشَآءُونَ فِيهَاۖ وَلَدَيْنَا مَزِيدٞۖ ٣٥"
+  }
+]

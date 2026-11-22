@@ -20,6 +20,7 @@ class PrayerRuntime with WidgetsBindingObserver {
   final PassageState? passages;
   final PrayerState state;
   final PrayerReminders reminders;
+  final clock = ValueNotifier<DateTime>(DateTime.now().toUtc());
   final pendingTap = ValueNotifier<ReminderTap?>(null);
   StreamSubscription<ReminderTap>? _subscription;
   Timer? _debounce;
@@ -38,7 +39,7 @@ class PrayerRuntime with WidgetsBindingObserver {
       app: app,
       passages: passages,
       state: await PrayerState.load(),
-      reminders: PrayerReminders(),
+      reminders: PrayerReminders(suggestions: app.suggestionHistory),
     );
     await runtime.reminders.initialize();
     runtime.pendingTap.value = runtime.reminders.initialTap;
@@ -46,13 +47,14 @@ class PrayerRuntime with WidgetsBindingObserver {
       (tap) => runtime.pendingTap.value = tap,
     );
     app.addListener(runtime._changed);
+    app.suggestionHistory.addListener(runtime._changed);
     passages?.addListener(runtime._changed);
     runtime.state.addListener(runtime._changed);
     WidgetsBinding.instance.addObserver(runtime);
-    runtime._dayCheck = Timer.periodic(
-      const Duration(minutes: 1),
-      (_) => runtime._changed(),
-    );
+    runtime._dayCheck = Timer.periodic(const Duration(minutes: 1), (_) {
+      runtime.clock.value = DateTime.now().toUtc();
+      runtime._changed();
+    });
     runtime._changed();
     return runtime;
   }
@@ -67,6 +69,7 @@ class PrayerRuntime with WidgetsBindingObserver {
       state.settings.toJson(),
       PrayerTimeZones.rulesVersion,
       ids,
+      app.suggestionHistory.revision,
       passages?.eligible.map((p) => p.toJson()).toList(),
       '${now.year}-${now.month}-${now.day}',
       reminders.permissionGranted,
@@ -169,11 +172,13 @@ class PrayerRuntime with WidgetsBindingObserver {
     _debounce?.cancel();
     _dayCheck?.cancel();
     app.removeListener(_changed);
+    app.suggestionHistory.removeListener(_changed);
     passages?.removeListener(_changed);
     state.removeListener(_changed);
     WidgetsBinding.instance.removeObserver(this);
     final subscription = _subscription?.cancel();
     pendingTap.dispose();
+    clock.dispose();
     final inFlight = _inFlight;
     return _shutdown = _finishShutdown(inFlight, subscription, cancelReminders);
   }

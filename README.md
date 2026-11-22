@@ -2,7 +2,7 @@
 
 **A personal Quran companion for reading, memorization and daily prayer.**
 
-Suwar brings the Warsh Quran, named passages, focused practice and prayer suggestions into an Arabic RTL Flutter app. Current version: **0.6.1+7**. Its ivory, deep green and gold interface follows the editable FigCraft designs.
+Suwar brings the Warsh Quran, named passages, focused practice and prayer suggestions into an Arabic RTL Flutter app. Current version: **0.7.0+8**. Its ivory, deep green and gold interface follows the editable FigCraft designs.
 
 **No account. No application backend. Your progress stays on your device.**
 
@@ -27,9 +27,10 @@ Actual browser captures from version 0.6.1, using illustrative saved progress. V
 | **Read** | Browse all 114 surahs and 6,214 source ayahs, search by name or number, adjust Quran text size, and return to an exact saved ayah. |
 | **Remember** | Mark whole surahs memorized, practise a verse with hide/reveal, and repeat its audio 1, 3 or 5 times. |
 | **Save passages** | Name one ayah or a contiguous range within one surah. Preview the complete text before saving; track its memorization independently. |
-| **Prepare for prayer** | Receive up to two nonoverlapping suggestions from memorized surahs and explicitly included memorized passages. |
+| **Prepare for prayer** | Receive up to two nonoverlapping suggestions from a persistent randomized cycle of memorized surahs and opted-in passages. Finish the cycle before repeating; Al-Fatiha is excluded. |
 | **Listen** | Stream Mahmoud Khalil Al-Hussary’s Warsh recitation, or explicitly download surahs for native offline playback. |
 | **Keep continuity** | Save bookmarks, complete a daily review selection, and export or restore a validated local JSON backup. |
+| **A moment of remembrance** | Display complete Warsh ayahs about reassurance, Jannah and Allah’s power in Android/iPhone widgets; choose a theme and open an ayah in context. |
 | **Prayer tools** | Calculate times offline for eight Moroccan cities, configure Android reminders, and request an Android next-prayer home-screen widget. |
 
 ### Named passages, without changing your whole-surah progress
@@ -44,11 +45,12 @@ The bundled Warsh numbering is authoritative: the complete Ayat al-Kursi passage
 
 | Capability | Android | Browser / web | iOS |
 | --- | --- | --- | --- |
-| Quran, practice, passages and local progress | Implemented | Implemented | Scaffold; native verification pending |
+| Quran, practice, passages and local progress | Implemented | Implemented | Simulator build verified; device QA pending |
 | Audio streaming | Implemented | Implemented | Native verification pending |
 | Explicit offline audio downloads | Implemented | Streaming only | Native verification pending |
 | Prayer calculations | Implemented | Implemented | Native verification pending |
-| Scheduled prayer notifications / launcher widget | Implemented | Unavailable | Unavailable |
+| Scheduled prayer notifications / next-prayer widget | Implemented | Unavailable | Unavailable |
+| Ayah widget | Home screen; lock screen on supported devices | In-app preview only | iOS 16+ lock screen and home screen; simulator build verified |
 
 Quran text and fonts are bundled. Audio requires a connection for streaming or the first download. Downloaded recordings remain separate from your progress and backup files.
 
@@ -93,7 +95,7 @@ Progress is local to the current app installation or browser profile. There is n
 
 Backup v2 includes whole-surah progress, saved passages, reading position, bookmarks, daily review and prayer settings. Import validates the source identity and data, shows a replacement preview, and asks for confirmation. Legacy v1 backups are accepted with an explicit warning that they contain no passages. A recoverable five-store journal protects replacement. Restored reminders remain off until you enable them again.
 
-Audio files and device permissions are excluded from backups. Download deletion preserves memorization and prayer settings.
+Audio files, device permissions, suggestion-cycle history and ayah-widget preferences are excluded from backups. Download deletion preserves memorization and prayer settings.
 
 ## Design and verification
 
@@ -102,6 +104,7 @@ FigCraft remains the design source; no Stitch is used.
 | Reference | Purpose |
 | --- | --- |
 | [Main design](design/Suwar.figcraft) · [Design system](DESIGN.md) | Original visual direction and reusable foundations |
+| [Cycle and widget design](design/Suwar-cycle-widget.figcraft) · [Behavior and setup](docs/SUGGESTIONS_AND_WIDGETS.md) | Persistent suggestions and native ayah widgets |
 | [Passage design](design/Suwar-passages.figcraft) | Approved named-passage flows and states |
 | [Build and release](docs/RELEASE.md) | Toolchain, checks, artifact creation and release limits |
 

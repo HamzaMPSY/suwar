@@ -94,9 +94,11 @@ List<RecitationTarget> eligibleRecitations(
   PassageState? passages,
 ) => [
   for (final surah in app.repository.surahs)
-    if (app.memorizedIds.contains(surah.number)) RecitationTarget.surah(surah),
+    if (surah.number != 1 && app.memorizedIds.contains(surah.number))
+      RecitationTarget.surah(surah),
   for (final passage in passages?.eligible ?? <SavedPassage>[])
-    RecitationTarget.passage(passage, app.repository),
+    if (passage.range.surahId != 1)
+      RecitationTarget.passage(passage, app.repository),
 ];
 
 List<RecitationTarget> selectRecitations(
@@ -104,7 +106,8 @@ List<RecitationTarget> selectRecitations(
   Random random,
 ) {
   final shuffled = {
-    for (final target in eligible) target.reference.identity: target,
+    for (final target in eligible)
+      if (target.range.surahId != 1) target.reference.identity: target,
   }.values.toList()..shuffle(random);
   // Search beyond an overlapping first candidate: a disjoint pair may still exist.
   for (var i = 0; i < shuffled.length; i++) {

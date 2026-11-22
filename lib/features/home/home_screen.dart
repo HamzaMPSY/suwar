@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../core/app_state.dart';
 import '../../core/quran_repository.dart';
@@ -35,10 +34,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final random = Random();
   List<RecitationTarget> pair = [];
-  String? knownKey;
-
   void review() {
     final app = widget.state;
     final runtime = widget.prayer;
@@ -51,9 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute<void>(
         builder: (_) {
           if (pair.isEmpty) return EmptySuggestionsScreen(state: app);
-          if (pair.length == 1 && !pair.first.isPassage) {
-            return SingleSuggestionScreen(state: app, subtitle: subtitle);
-          }
           return PrayerReviewScreen(
             app: app,
             tap: ReminderTap(
@@ -71,19 +64,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([
       widget.state,
+      widget.state.suggestionHistory,
       ?widget.prayer?.state,
+      ?widget.prayer?.clock,
       ?PassageScope.maybeOf(context),
     ]),
     builder: (context, _) {
       final app = widget.state;
       final eligible = eligibleRecitations(app, PassageScope.maybeOf(context));
-      final key = eligible
-          .map((t) => '${t.reference.fingerprint}:${t.name}')
-          .join('|');
-      if (knownKey != key) {
-        knownKey = key;
-        pair = selectRecitations(eligible, random);
-      }
+      final now = DateTime.now().toUtc();
+      final runtime = widget.prayer;
+      final upcoming = runtime?.state.calculator.next(
+        runtime.state.settings,
+        now,
+      );
+      final slot = upcoming == null
+          ? 'today:${now.year}-${now.month}-${now.day}'
+          : 'prayer:${upcoming.kind.name}:${upcoming.timeUtc.millisecondsSinceEpoch}';
+      pair = app.suggestionHistory.current(eligible, slot, now: now);
       if (pair.isEmpty) {
         return EmptySuggestionsContent(
           state: app,
@@ -176,6 +174,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 10),
                 _pair(context),
+                const SizedBox(height: 12),
+                const Text(
+                  'تكتمل دورة محفوظاتك قبل تكرار الاقتراحات. الفاتحة مستثناة.',
+                  style: TextStyle(fontSize: 12, color: SuwarColors.muted),
+                ),
+                if (app.suggestionHistory.error != null)
+                  Text(
+                    app.suggestionHistory.error!,
+                    style: const TextStyle(color: SuwarColors.ink),
+                  ),
                 const SizedBox(height: 18),
                 PrimaryAction(
                   label: pair.any((t) => t.isPassage)

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "source": "kfgqpc-warsh-v10-6214",
+  "entries": [
+    {
+      "id": "94:5",
+      "surahId": 94,
+      "ayahNumber": 5,
+      "topic": "comfort",
+      "surahName": "الشرح",
+      "context": "بشارة اليسر مع العسر",
+      "compact": true
+    },
+    {
+      "id": "36:57",
+      "surahId": 36,
+      "ayahNumber": 57,
+      "topic": "jannah",
+      "surahName": "يس",
+      "context": "سلام أهل الجنة",
+      "compact": true
+    },
+    {
+      "id": "85:16",
+      "surahId": 85,
+      "ayahNumber": 16,
+      "topic": "power",
+      "surahName": "البروج",
+      "context": "نفاذ مشيئة الله",
+      "compact": true
+    },
+    {
+      "id": "85:14",
+      "surahId": 85,
+      "ayahNumber": 14,
+      "topic": "comfort",
+      "surahName": "البروج",
+      "context": "مغفرة الله ومحبته",
+      "compact": true
+    },
+    {
+      "id": "50:34",
+      "surahId": 50,
+      "ayahNumber": 34,
+      "topic": "jannah",
+      "surahName": "ق",
+      "context": "الدخول إلى الجنة بسلام",
+      "compact": false
+    },
+    {
+      "id": "85:13",
+      "surahId": 85,
+      "ayahNumber": 13,
+      "topic": "power",
+      "surahName": "البروج",
+      "context": "الله يبدئ الخلق ويعيده",
+      "compact": true
+    },
+    {
+      "id": "94:6",
+      "surahId": 94,
+      "ayahNumber": 6,
+      "topic": "comfort",
+      "surahName": "الشرح",
+      "context": "اليسر مع العسر",
+      "compact": true
+    },
+    {
+      "id": "15:46",
+      "surahId": 15,
+      "ayahNumber": 46,
+      "topic": "jannah",
+      "surahName": "الحجر",
+      "context": "دخول الجنة بأمان",
+      "compact": true
+    },
+    {
+      "id": "67:1",
+      "surahId": 67,
+      "ayahNumber": 1,
+      "topic": "power",
+      "surahName": "الملك",
+      "context": "ملك الله وقدرته",
+      "compact": false
+    },
+    {
+      "id": "13:29",
+      "surahId": 13,
+      "ayahNumber": 29,
+      "topic": "comfort",
+      "surahName": "الرعد",
+      "context": "طمأنينة القلوب بذكر الله",
+      "compact": false
+    },
+    {
+      "id": "15:45",
+      "surahId": 15,
+      "ayahNumber": 45,
+      "topic": "jannah",
+      "surahName": "الحجر",
+      "context": "نعيم المتقين",
+      "compact": false
+    },
+    {
+      "id": "50:35",
+      "surahId": 50,
+      "ayahNumber": 35,
+      "topic": "jannah",
+      "surahName": "ق",
+      "context": "نعيم الجنة والمزيد",
+      "compact": false
+    }
+  ]
+}

@@ -44,3 +44,9 @@ Eight-point rosettes, thin geometric lines and a simple mihrab arch. Ornaments a
 ## Numerals — user preference, 2026-10-19
 
 Display Western digits (0–9) throughout the Arabic RTL interface, including counts, dates, times, range fields and ayah-number markers. Continue accepting Arabic and Eastern Arabic digits in search and range input. Scripture words, diacritics, source numbering and Warsh font remain unchanged; ayah marker digits use the UI font at the presentation boundary. This explicit preference supersedes Eastern-digit examples in older FigCraft reference screens.
+
+## Cycles and ayah widget
+
+The editable extension is `design/Suwar-cycle-widget.figcraft`. Suggestion copy explains completion of the cycle and exclusion of Al-Fatiha. The end of an odd cycle shows one target. «الاقتراح التالي» advances the shared cycle.
+
+«آية تُطمئنك» lives in Settings, with a source-text preview, theme chips, an explicit next action and a context-reading action. Keep whole ayahs and source-specific Warsh references. The Android surface uses ivory and green; iPhone lock-screen color follows WidgetKit’s system treatment. Compact layouts use a verified short-ayah subset, never ellipses or scripture fragments. Installation instructions distinguish manual iPhone lock-screen placement from Android’s device-dependent support.

@@ -73,7 +73,10 @@ class ReminderTap {
 }
 
 List<Surah> reminderSuggestions(List<Surah> memorized, Random random) {
-  final unique = {for (final surah in memorized) surah.number: surah};
+  final unique = {
+    for (final surah in memorized)
+      if (surah.number != 1) surah.number: surah,
+  };
   final shuffled = unique.values.toList()..shuffle(random);
   return shuffled.take(2).toList();
 }

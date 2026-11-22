@@ -69,8 +69,9 @@ void main() {
             .suggestions(Random(seed))
             .map((s) => s.number)
             .toList();
-        expect(ids.length, 2);
-        expect(ids.toSet().length, 2);
+        expect(ids.length, inInclusiveRange(1, 2));
+        expect(ids.toSet().length, ids.length);
+        expect(ids, isNot(contains(1)));
         expect(state.memorizedIds.containsAll(ids), isTrue);
       }
       await state.toggleMemorized(112);

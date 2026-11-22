@@ -18,6 +18,7 @@ import 'features/prayer/prayer_review_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/quran/library_screen.dart';
+import 'features/quran/reader_screen.dart';
 import 'features/memory/memory_screen.dart';
 part 'app_shell.dart';
 
@@ -61,6 +62,9 @@ class _SuwarAppState extends State<SuwarApp> {
     state.addListener(_widgetTap);
     _tap();
     _widgetTap();
+    state.ayahWidget.pendingLaunch.addListener(_ayahTap);
+    state.addListener(_ayahTap);
+    _ayahTap();
   }
 
   void _tap() {
@@ -104,6 +108,33 @@ class _SuwarAppState extends State<SuwarApp> {
     WidgetsBinding.instance.ensureVisualUpdate();
   }
 
+  bool handlingAyah = false;
+  void _ayahTap() {
+    if (handlingAyah ||
+        !state.onboardingComplete ||
+        state.ayahWidget.pendingLaunch.value == null) {
+      return;
+    }
+    handlingAyah = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      handlingAyah = false;
+      if (!mounted || navigatorKey.currentState == null) return;
+      final item = state.ayahWidget.find(state.ayahWidget.pendingLaunch.value);
+      if (item == null) return;
+      state.ayahWidget.pendingLaunch.value = null;
+      navigatorKey.currentState!.push(
+        MaterialPageRoute<void>(
+          builder: (_) => ReaderScreen(
+            state: state,
+            surah: state.repository.surah(item.surahId),
+            initialAyahNumber: item.ayahNumber,
+          ),
+        ),
+      );
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
   Widget _scopes(Widget child) {
     if (widget.passages != null) {
       child = PassageScope(state: widget.passages!, child: child);
@@ -133,6 +164,8 @@ class _SuwarAppState extends State<SuwarApp> {
 
   @override
   void dispose() {
+    state.ayahWidget.pendingLaunch.removeListener(_ayahTap);
+    state.removeListener(_ayahTap);
     widget.personal?.widget.prayerLaunch.removeListener(_widgetTap);
     state.removeListener(_widgetTap);
     widget.prayer?.pendingTap.removeListener(_tap);

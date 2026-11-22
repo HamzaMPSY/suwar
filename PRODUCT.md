@@ -47,3 +47,9 @@ Home and prayer reminders select full surahs and explicitly eligible passages wi
 ## Localization correction — 0.6.1
 
 Arabic RTL uses Western digits0–9 throughout app presentation, including verse markers, while both Arabic digit input sets remain accepted. The bundled Warsh source remains immutable. Morocco follows permanentUTC+0 from September20,2026, with historical offsets preserved. Prayer display, daily boundaries, date-specific reminders and the Android widget share this correction even on devices with older time-zone data.
+
+## Suggestion cycles and ayah widgets — November 22, 2026
+
+Prayer suggestions share a persistent, randomized cycle across Today, manual selection and reminders. Every eligible surah or opted-in memorized passage is used before the next cycle. Al-Fatiha and its passages are always excluded. A cycle may end with one suggestion; overlapping targets never share a pair. Future reminder reservations survive schedule refreshes without counting as already shown.
+
+Settings includes «آية تُطمئنك»: complete, curated Warsh ayahs about reassurance, Jannah and Allah’s power. Selection is independent of memorization and changes daily; users can choose a theme or another ayah. Android supports a resizable widget on the home screen and on supported lock screens. iPhone includes an iOS 16+ lock-screen widget and a home-screen widget. Tapping opens the exact source ayah in context. No account, network or notification permission is needed.
